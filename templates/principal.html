@@ -1,0 +1,60 @@
+{% extends './layout.html' %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .main-container {
+        margin-top: 50px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #007bff;
+        border-radius: 15px 15px 0 0;
+        color: white;
+        text-align: center;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .btn-module {
+        margin-bottom: 10px;
+    }
+</style>
+
+
+<main class="container">
+    <div class="row justify-content-center main-container">
+        <div class="col-md-6">
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Sistema LP</h3>
+                </div>
+                <div class="card-body">
+
+                    <a href="/usuarios" class="btn btn-primary btn-block btn-module">Usuarios</a>
+                    <a href="/mascotas" class="btn btn-success btn-block btn-module">Mascotas</a>
+                    <a href="/carros" class="btn btn-info btn-block btn-module">Carros</a>
+                    <a href="/logout" class="btn btn-danger btn-block btn-module">Cerrar sesión</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

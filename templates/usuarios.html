@@ -1,0 +1,83 @@
+{% extends './layout.html' %}
+{% block content %}
+<div class="container">
+    <h1>Modulo de usuarios</h1>
+
+    <!-- Formulario para agregar usuario -->
+    <h2>Agregar Usuario</h2>
+    <form id="formAgregar" method="post" action="{{ url_for('usuarios') }}">
+        <div class="mb-3">
+            <label for="usuario">Usuario:</label>
+            <input type="text" class="form-control" id="usuario" name="usuario" required>
+        </div>
+        <div class="mb-3">
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" class="form-control" id="contraseña" name="contraseña" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Agregar Usuario</button>
+    </form>
+
+    <!-- Lista de usuarios -->
+    <h2>Listado de Usuarios</h2>
+    <ul class="list-group" id="listaUsuarios">
+        {% for usuario in usuarios %}
+            <li class="list-group-item">
+                Usuario: {{ usuario.usuario }}
+                <div class="btn-group" role="group" aria-label="Acciones">
+                    <button type="button" class="btn btn-warning btnEditar" data-id="{{ usuario.id }}">Editar</button>
+                    <button type="button" class="btn btn-danger btnBorrar" data-id="{{ usuario.id }}">Borrar</button>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script src="jquery.js"></script>
+<script>
+    $(document).ready(function() {
+        // Manejo de evento para agregar usuario
+        $('#formAgregar').submit(function(event) {
+            event.preventDefault();
+            $.post($(this).attr('action'), $(this).serialize(), function(response) {
+                alert(response.message);
+                location.reload();
+            });
+        });
+
+        // Manejo de evento para editar usuario
+        $('.btnEditar').click(function() {
+            let usuarioId = $(this).data('id');
+            let usuario = prompt('Ingrese el nuevo nombre de usuario:');
+            let contraseña = prompt('Ingrese la nueva contraseña:');
+            
+            $.ajax({
+                type: 'PUT',
+                url: '/usuarios/' + usuarioId,
+                data: {
+                    usuario: usuario,
+                    contraseña: contraseña
+                },
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                }
+            });
+        });
+
+        // Manejo de evento para borrar usuario
+        $('.btnBorrar').click(function() {
+            let usuarioId = $(this).data('id');
+            if (confirm('¿Está seguro de que desea borrar este usuario?')) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/usuarios/' + usuarioId,
+                    success: function(response) {
+                        alert(response.message);
+                        location.reload();
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
