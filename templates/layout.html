@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
     <title>LP</title>
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+            min-height: 75vh;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -31,6 +44,12 @@
                         <a class="nav-link" href="/carros">Carros</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/nyse">Bolsa de valores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/nasa">NASA</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/logout">Cerrar sesión</a>
                     </li>
                 </ul>
@@ -40,6 +59,12 @@
 
     <div class="container mt-4">
         {% block content %}{% endblock %}
+    </div>
+
+    <div id="footer">
+        <footer class="bg-light text-center p-3">
+            <p class="mb-0">© 2023 Este software fue desarrollado por Ramón Ruiz y Luis Mario López</p>
+        </footer>
     </div>
 
 </body>

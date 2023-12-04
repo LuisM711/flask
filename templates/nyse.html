@@ -1,0 +1,59 @@
+{% extends './layout.html' %}
+{% block content %}
+
+<div class="container">
+    <h1>Bolsa de Nueva York: NYSE</h1>
+    
+    <div class="markets">
+        {% for market in markets['markets'] %}
+            <div class="market">
+                <h2>{{ market.region }}</h2>
+                <p><strong>Tipo de mercado:</strong> {{ market.market_type }}</p>
+                <p><strong>Principales exchanges:</strong> {{ market.primary_exchanges }}</p>
+                <p><strong>Hora de apertura:</strong> {{ market.local_open }}</p>
+                <p><strong>Hora de cierre:</strong> {{ market.local_close }}</p>
+                
+                {% if market.current_status == 'open' %}
+                    <p class="open-status">Estado: Abierto</p>
+                {% else %}
+                    <p class="closed-status">Estado: Cerrado</p>
+                {% endif %}
+                
+                {% if market.notes %}
+                    <p><strong>Notes:</strong> {{ market.notes }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .markets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .market {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        margin-bottom: 20px;
+    }
+
+    .market h2 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .open-status {
+        color: green;
+    }
+
+    .closed-status {
+        color: red;
+    }
+</style>
+{% endblock %}

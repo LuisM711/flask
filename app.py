@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, url_for, redirect, send_from_directory, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+import requests
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = 'claveeeee'  # Reemplaza con una clave secreta segura
+app.config['SECRET_KEY'] = 'claveSuperSecretaImposibleDeAdivinar    '
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'home'
@@ -19,10 +20,10 @@ class Usuario(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     usuario = db.Column(db.String(200), unique=True)
     contraseña = db.Column(db.String(200))
-    is_active = db.Column(db.Boolean, default=True)  # Agregar este atributo
+    is_active = db.Column(db.Boolean, default=True) 
 
     def is_authenticated(self):
-        return True  # Cambiar según la lógica de autenticación
+        return True 
 
     def is_anonymous(self):
         return False
@@ -45,7 +46,6 @@ class Carro(db.Model):
     marca = db.Column(db.String(200), unique=True)
     modelo = db.Column(db.Integer)
     año = db.Column(db.Integer)
-# Configurar Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
@@ -61,7 +61,7 @@ def autenticar():
         contraseñaForm = request.form['contraseña']
         usuarioBd = Usuario.query.filter_by(usuario=usuarioForm, contraseña=contraseñaForm).first()
         if usuarioBd is not None:
-            login_user(usuarioBd)  # Iniciar sesión del usuario
+            login_user(usuarioBd) 
             return redirect(url_for('principal'))
         else:
             raise Exception("Usuario o contraseña incorrectos")
@@ -78,7 +78,6 @@ def principal():
 def usuarios():
     if request.method == 'POST':
         if 'usuario_id' in request.form:
-            # Editar usuario existente
             usuario_id = request.form['usuario_id']
             usuario = Usuario.query.get(usuario_id)
             usuario.usuario = request.form['usuario']
@@ -86,7 +85,6 @@ def usuarios():
             db.session.commit()
             return jsonify({"message": "Usuario actualizado correctamente"})
         else:
-            # Crear nuevo usuario
             try:
                 nuevo_usuario = Usuario(usuario=request.form['usuario'], contraseña=request.form['contraseña'])
                 db.session.add(nuevo_usuario)
@@ -98,9 +96,7 @@ def usuarios():
     usuarios = Usuario.query.all()
     usuario_editar = None
     if 'editar_id' in request.args:
-        # Mostrar formulario de edición si se proporciona un ID
         usuario_editar = Usuario.query.get(request.args['editar_id'])
-
     return render_template('usuarios.html', usuarios=usuarios, usuario_editar=usuario_editar)
 @app.route('/usuarios/<int:usuario_id>', methods=['PUT'])
 @login_required
@@ -112,7 +108,6 @@ def editar_usuario(usuario_id):
     usuario.usuario = request.form['usuario']
     usuario.contraseña = request.form['contraseña']
     db.session.commit()
-    
     return jsonify({"message": "Usuario actualizado correctamente"})
 @app.route('/usuarios/<int:usuario_id>', methods=['DELETE'])
 @login_required
@@ -164,11 +159,12 @@ def mascotas_delete(mascota_id):
 
 
 @app.route('/carros', methods=['GET'])
+@login_required
 def carros():
     carros = Carro.query.all()
     return render_template('carros.html', carros=carros)
-
 @app.route('/carros', methods=['POST'])
+@login_required
 def carros_post():
     nuevo_carro = Carro(
         marca=request.form['marca'],
@@ -184,6 +180,7 @@ def carros_post():
 
 
 @app.route('/carros/<int:carro_id>', methods=['PUT'])
+@login_required
 def carros_put(carro_id):
     carro = Carro.query.get(carro_id)
     carro.marca = request.form['marca']
@@ -193,30 +190,48 @@ def carros_put(carro_id):
     return jsonify({"message": "Carro actualizado correctamente"})
 
 @app.route('/carros/<int:carro_id>', methods=['DELETE'])
+@login_required
 def carros_delete(carro_id):
     carro = Carro.query.get(carro_id)
     db.session.delete(carro)
     db.session.commit()
     return jsonify({"message": "Carro eliminado correctamente"})
 
+@app.route('/nyse', methods=['GET'])
+@login_required
+def nyse():
+    api_key = 'WMXT15076A2TQCU8'
+    api_key = 'demo'
+    api_url = f'https://www.alphavantage.co/query?function=MARKET_STATUS&apikey={api_key}'
+    response = requests.get(api_url)
 
+    if response.status_code == 200:
+        data = response.json()
+        return render_template('nyse.html', markets=data)
+    else:
+        return jsonify({"message": "Error al obtener datos de la Bolsa de Nueva York"})
+@app.route('/nasa', methods=['GET'])
+@login_required
+def nasa():
+    api_key = '0kV2072caK8oTfVFNXfNKUfcJhShz7TkwbmPx4ck'
+    api_url = f'https://api.nasa.gov/planetary/apod?api_key={api_key}'
+    response = requests.get(api_url)
 
+    if response.status_code == 200:
+        data = response.json()
+        return render_template('nasa.html', data=data)
+    else:
+        return jsonify({"message": "Error al obtener datos de la NASA"})
 
 
 
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
-    logout_user()  # Cierra la sesión del usuario
+    logout_user() 
     return redirect(url_for('home'))
-
-
-
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-
     app.run(debug=True)
-
-
