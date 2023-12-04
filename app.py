@@ -35,17 +35,14 @@ class Producto(db.Model):
     nombre = db.Column(db.String(200))
     precio = db.Column(db.Integer)
     descripcion = db.Column(db.String(200))
-class Mascota(db.Model):
+class Divisa(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(200), unique=True)
-    edad = db.Column(db.Integer)
-    raza = db.Column(db.String(200))
-    descripcion = db.Column(db.String(200))
-class Carro(db.Model):
+    pais = db.Column(db.String(200))
+class Cripto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    marca = db.Column(db.String(200), unique=True)
-    modelo = db.Column(db.Integer)
-    año = db.Column(db.Integer)
+    nombre = db.Column(db.String(200), unique=True)
+    descripcion = db.Column(db.String(200))
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
@@ -60,6 +57,7 @@ def autenticar():
         usuarioForm = request.form['usuario']
         contraseñaForm = request.form['contraseña']
         usuarioBd = Usuario.query.filter_by(usuario=usuarioForm, contraseña=contraseñaForm).first()
+
         if usuarioBd is not None:
             login_user(usuarioBd) 
             return redirect(url_for('principal'))
@@ -72,7 +70,15 @@ def autenticar():
 @login_required
 def principal():
     return render_template('principal.html')
-
+# @app.route("/prueba", methods=['GET'])
+# def prueba():
+#     try:
+#         nuevo_usuario = Usuario(usuario='luis', contraseña='1234')
+#         db.session.add(nuevo_usuario)
+#         db.session.commit()
+#     except Exception as e:
+#         return jsonify({"message": "Error al agregar usuario", "error": str(e)})
+#     return jsonify({"message": "Usuario agregado correctamente"})
 @app.route('/usuarios', methods=['GET', 'POST'])
 @login_required
 def usuarios():
@@ -116,86 +122,84 @@ def borrar_usuario(usuario_id):
     db.session.delete(usuario)
     db.session.commit()
     return jsonify({"message": "Usuario eliminado correctamente"})
-##### mascotas
-@app.route('/mascotas', methods=['GET'])
+##### divisas
+@app.route('/divisas', methods=['GET'])
 @login_required
-def mascotas():
-    mascotas = Mascota.query.all()
-    return render_template('mascotas.html', mascotas=mascotas)
+def divisas():
+    divisas = Divisa.query.all()
+    return render_template('divisas.html', divisas=divisas)
 
-@app.route('/mascotas', methods=['POST'])
+@app.route('/divisas', methods=['POST'])
 @login_required
-def mascotas_post():
-    nueva_mascota = Mascota(
+def divisas_post():
+    nueva_divisa = Divisa(
         nombre=request.form['nombre'],
-        edad=request.form['edad'],
-        raza=request.form['raza'],
-        descripcion=request.form['descripcion']
+        pais=request.form['pais'],
     )
-    db.session.add(nueva_mascota)
+    db.session.add(nueva_divisa)
     db.session.commit()
-    return jsonify({"message": "Mascota agregada correctamente"})
+    return jsonify({"message": "Divisa agregada correctamente"})
 
-@app.route('/mascotas/<int:mascota_id>', methods=['PUT'])
+@app.route('/divisas/<int:divisa_id>', methods=['PUT'])
 @login_required
-def mascotas_put(mascota_id):
-    mascota = Mascota.query.get(mascota_id)
-    mascota.nombre = request.form['nombre']
-    mascota.edad = request.form['edad']
-    mascota.raza = request.form['raza']
-    mascota.descripcion = request.form['descripcion']
+def divisas_put(divisa_id):
+    divisa = Divisa.query.get(divisa_id)
+    divisa.nombre = request.form['nombre']
+    divisa.pais = request.form['pais']
     db.session.commit()
-    return jsonify({"message": "Mascota actualizada correctamente"})
+    return jsonify({"message": "Divisa actualizada correctamente"})
 
-@app.route('/mascotas/<int:mascota_id>', methods=['DELETE'])
+@app.route('/divisas/<int:divisa_id>', methods=['DELETE'])
 @login_required
-def mascotas_delete(mascota_id):
-    mascota = Mascota.query.get(mascota_id)
-    db.session.delete(mascota)
+def divisas_delete(divisa_id):
+    divisa = Divisa.query.get(divisa_id)
+    db.session.delete(divisa)
     db.session.commit()
-    return jsonify({"message": "Mascota eliminada correctamente"})
+    return jsonify({"message": "divisa eliminada correctamente"})
 
-##### Carros
+##### criptos
 
 
-@app.route('/carros', methods=['GET'])
+@app.route('/criptos', methods=['GET'])
 @login_required
-def carros():
-    carros = Carro.query.all()
-    return render_template('carros.html', carros=carros)
-@app.route('/carros', methods=['POST'])
+def criptos():
+    criptos = Cripto.query.all()
+    print("inicio de criptos")
+    print (criptos)
+    print("fin de criptos")
+
+    return render_template('criptos.html', criptos=criptos)
+@app.route('/criptos', methods=['POST'])
 @login_required
-def carros_post():
-    nuevo_carro = Carro(
-        marca=request.form['marca'],
-        modelo=request.form['modelo'],
-        año=request.form['año']
+def criptos_post():
+    nuevo_cripto = Cripto(
+        nombre=request.form['nombre'],
+        descripcion = request.form['descripcion']
     )
     try:
-        db.session.add(nuevo_carro)
+        db.session.add(nuevo_cripto)
         db.session.commit()
     except Exception as e:
-        return jsonify({"message": "Error al agregar carro", "error": str(e)})
-    return jsonify({"message": "Carro agregado correctamente"})
+        return jsonify({"message": "Error al agregar cripto", "error": str(e)})
+    return jsonify({"message": "cripto agregado correctamente"})
 
 
-@app.route('/carros/<int:carro_id>', methods=['PUT'])
+@app.route('/criptos/<int:cripto_id>', methods=['PUT'])
 @login_required
-def carros_put(carro_id):
-    carro = Carro.query.get(carro_id)
-    carro.marca = request.form['marca']
-    carro.modelo = request.form['modelo']
-    carro.año = request.form['año']
+def criptos_put(cripto_id):
+    cripto = Cripto.query.get(cripto_id)
+    cripto.nombre = request.form['nombre']
+    cripto.descripcion = request.form['descripcion']
     db.session.commit()
-    return jsonify({"message": "Carro actualizado correctamente"})
+    return jsonify({"message": "cripto actualizado correctamente"})
 
-@app.route('/carros/<int:carro_id>', methods=['DELETE'])
+@app.route('/criptos/<int:cripto_id>', methods=['DELETE'])
 @login_required
-def carros_delete(carro_id):
-    carro = Carro.query.get(carro_id)
-    db.session.delete(carro)
+def criptos_delete(cripto_id):
+    cripto = Cripto.query.get(cripto_id)
+    db.session.delete(cripto)
     db.session.commit()
-    return jsonify({"message": "Carro eliminado correctamente"})
+    return jsonify({"message": "cripto eliminado correctamente"})
 
 @app.route('/nyse', methods=['GET'])
 @login_required

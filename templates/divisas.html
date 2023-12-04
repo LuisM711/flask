@@ -1,0 +1,83 @@
+{% extends './layout.html' %}
+{% block content %}
+<div class="container">
+    <h1>Modulo de divisas</h1>
+
+    <!-- Formulario para agregar divisa -->
+    <h2>Agregar divisa</h2>
+    <form id="formAgregar" method="post" action="{{ url_for('divisas_post') }}">
+        <div class="mb-3">
+            <label for="nombre">Nombre:</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+        <div class="mb-3">
+            <label for="edad">País:</label>
+            <input type="text" class="form-control" id="pais" name="pais" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Agregar divisa</button>
+    </form>
+
+    <!-- Lista de divisas -->
+    <h2>Listado de divisas</h2>
+    <ul class="list-group" id="listadivisas">
+        {% for divisa in divisas %}
+            <li class="list-group-item">
+                Nombre: {{ divisa.nombre }} Pais: {{ divisa.pais }}
+                <div class="btn-group" role="group" aria-label="Acciones">
+                    <button type="button" class="btn btn-warning btnEditar" data-id="{{ divisa.id }}">Editar</button>
+                    <button type="button" class="btn btn-danger btnBorrar" data-id="{{ divisa.id }}">Borrar</button>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script src="jquery.js" ></script>
+<script>
+    $(document).ready(function() {
+        // Manejo de evento para agregar divisa
+        $('#formAgregar').submit(function(event) {
+            event.preventDefault();
+            $.post($(this).attr('action'), $(this).serialize(), function(response) {
+                alert(response.message);
+                location.reload();
+            });
+        });
+
+        // Manejo de evento para editar divisa
+        $('.btnEditar').click(function() {
+            let divisaId = $(this).data('id');
+            let nombre = prompt('Ingrese el nuevo nombre:');
+            let pais = prompt('Ingrese el nuevo país:');
+            
+            $.ajax({
+                type: 'PUT',
+                url: '/divisas/' + divisaId,
+                data: {
+                    nombre: nombre,
+                    pais: pais,
+                },
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                }
+            });
+        });
+
+        // Manejo de evento para borrar divisa
+        $('.btnBorrar').click(function() {
+            let divisaId = $(this).data('id');
+            if (confirm('¿Está seguro de que desea borrar esta divisa?')) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/divisas/' + divisaId,
+                    success: function(response) {
+                        alert(response.message);
+                        location.reload();
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
