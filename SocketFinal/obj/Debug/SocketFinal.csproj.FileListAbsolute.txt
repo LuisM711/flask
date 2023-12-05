@@ -5,3 +5,11 @@ C:\Users\Luis\source\repos\SocketFinal\obj\Debug\SocketFinal.csproj.AssemblyRefe
 C:\Users\Luis\source\repos\SocketFinal\obj\Debug\SocketFinal.csproj.CoreCompileInputs.cache
 C:\Users\Luis\source\repos\SocketFinal\obj\Debug\SocketFinal.exe
 C:\Users\Luis\source\repos\SocketFinal\obj\Debug\SocketFinal.pdb
+C:\Users\LuisM\Documents\flask\SocketFinal\bin\Debug\SocketFinal.exe.config
+C:\Users\LuisM\Documents\flask\SocketFinal\bin\Debug\SocketFinal.exe
+C:\Users\LuisM\Documents\flask\SocketFinal\bin\Debug\SocketFinal.pdb
+C:\Users\LuisM\Documents\flask\SocketFinal\obj\Debug\SocketFinal.csproj.AssemblyReference.cache
+C:\Users\LuisM\Documents\flask\SocketFinal\obj\Debug\SocketFinal.csproj.SuggestedBindingRedirects.cache
+C:\Users\LuisM\Documents\flask\SocketFinal\obj\Debug\SocketFinal.csproj.CoreCompileInputs.cache
+C:\Users\LuisM\Documents\flask\SocketFinal\obj\Debug\SocketFinal.exe
+C:\Users\LuisM\Documents\flask\SocketFinal\obj\Debug\SocketFinal.pdb

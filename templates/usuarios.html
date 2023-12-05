@@ -2,8 +2,6 @@
 {% block content %}
 <div class="container">
     <h1>Modulo de usuarios</h1>
-
-    <!-- Formulario para agregar usuario -->
     <h2>Agregar Usuario</h2>
     <form id="formAgregar" method="post" action="{{ url_for('usuarios') }}">
         <div class="mb-3">
@@ -16,8 +14,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Agregar Usuario</button>
     </form>
-
-    <!-- Lista de usuarios -->
     <h2>Listado de Usuarios</h2>
     <ul class="list-group" id="listaUsuarios">
         {% for usuario in usuarios %}
@@ -35,7 +31,6 @@
 <script src="jquery.js"></script>
 <script>
     $(document).ready(function() {
-        // Manejo de evento para agregar usuario
         $('#formAgregar').submit(function(event) {
             event.preventDefault();
             $.post($(this).attr('action'), $(this).serialize(), function(response) {
@@ -43,13 +38,10 @@
                 location.reload();
             });
         });
-
-        // Manejo de evento para editar usuario
         $('.btnEditar').click(function() {
             let usuarioId = $(this).data('id');
             let usuario = prompt('Ingrese el nuevo nombre de usuario:');
             let contraseña = prompt('Ingrese la nueva contraseña:');
-            
             $.ajax({
                 type: 'PUT',
                 url: '/usuarios/' + usuarioId,
@@ -63,8 +55,6 @@
                 }
             });
         });
-
-        // Manejo de evento para borrar usuario
         $('.btnBorrar').click(function() {
             let usuarioId = $(this).data('id');
             if (confirm('¿Está seguro de que desea borrar este usuario?')) {

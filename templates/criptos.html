@@ -2,8 +2,6 @@
 {% block content %}
 <div class="container">
     <h1>Modulo de criptos</h1>
-
-    <!-- Formulario para agregar cripto -->
     <h2>Agregar cripto</h2>
     <form id="formAgregar" method="post" action="{{ url_for('criptos_post') }}">
         <div class="mb-3">
@@ -16,8 +14,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Agregar cripto</button>
     </form>
-
-    <!-- Lista de criptos -->
     <h2>Listado de criptos</h2>
     <ul class="list-group" id="listacriptos">
         {% for cripto in criptos %}
@@ -31,11 +27,9 @@
         {% endfor %}
     </ul>
 </div>
-
 <script src="jquery.js"></script>
 <script>
     $(document).ready(function() {
-        // Manejo de evento para agregar cripto
         $('#formAgregar').submit(function(event) {
             event.preventDefault();
             $.post($(this).attr('action'), $(this).serialize(), function(response) {
@@ -43,8 +37,6 @@
                 location.reload();
             });
         });
-
-        // Manejo de evento para editar cripto
         $('.btnEditar').click(function() {
             let criptoId = $(this).data('id');
             let nombre = prompt('Ingrese el nuevo nombre:');
@@ -63,10 +55,8 @@
                 }
             });
         });
-
-        // Manejo de evento para borrar cripto
         $('.btnBorrar').click(function() {
-            var criptoId = $(this).data('id');
+            let criptoId = $(this).data('id');
             if (confirm('¿Está seguro de que desea borrar este cripto?')) {
                 $.ajax({
                     type: 'DELETE',

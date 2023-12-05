@@ -43,6 +43,11 @@ class Cripto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(200), unique=True)
     descripcion = db.Column(db.String(200))
+class Tarea(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(200), unique=True)
+    descripcion = db.Column(db.String(200))
+
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
@@ -243,11 +248,6 @@ def socket_data():
         return jsonify(result)
     except Exception as e:
         return jsonify({'error': str(e)})
-# Define el modelo de Tarea
-class Tarea(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(200), unique=True)
-    descripcion = db.Column(db.String(200))
 
 @app.route('/tareas', methods=['GET'])
 @login_required
@@ -277,7 +277,7 @@ def editar_tarea(id):
     db.session.commit()
 
     tareas = Tarea.query.all()
-    return render_template('tareas.html', tareas=tareas)
+    return jsonify({"message": "Tarea modificada correctamente"})
 
 @app.route('/tareas/<int:id>', methods=['DELETE'])
 @login_required

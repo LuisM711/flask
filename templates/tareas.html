@@ -13,85 +13,53 @@
         <button type="submit" id="btnAgregar" class="btn btn-primary">Agregar Tarea</button>
     </form>
 
-    <div id="listaTareas">
-        <!-- La lista de tareas se llenará dinámicamente aquí -->
+    <h2>Listado de tareas</h2>
+    <ul class="list-group" id="listadivisas">
         {% for tarea in tareas %}
-            <div class="tarea">
-                <p>{{ tarea.nombre }} - {{ tarea.descripcion }}</p>
-                <button class="btn btn-warning btnEditar" data-id="{{ tarea.id }}">Editar</button>
-                <button class="btn btn-danger btnEliminar" data-id="{{ tarea.id }}">Eliminar</button>
-            </div>
+            <li class="list-group-item">
+                Nombre: {{ tarea.nombre }} Descripción: {{ tarea.descripcion }}
+                <div class="btn-group" role="group" aria-label="Acciones">
+                    <button type="button" class="btn btn-warning btnEditar" data-id="{{ tarea.id }}">Editar</button>
+                    <button type="button" class="btn btn-danger btnEliminar" data-id="{{ tarea.id }}">Borrar</button>
+                </div>
+            </li>
         {% endfor %}
-    </div>
+    </ul>
 </div>
 <script src="jquery.js"></script>
 <script>
-    // Función para cargar y mostrar las tareas
-    function cargarTareas() {
-        $.ajax({
-            url: '/tareas',
-            type: 'GET',
-            success: function (data) {
-                var listaTareas = $('#listaTareas');
-                listaTareas.empty();
-                
-                $.each(data, function (index, tarea) {
-                    var tareaHtml = '<div class="tarea">' +
-                                        '<p>' + tarea.nombre + ' - ' + tarea.descripcion + '</p>' +
-                                        '<button class="btn btn-warning btnEditar" data-id="' + tarea.id + '">Editar</button>' +
-                                        '<button class="btn btn-danger btnEliminar" data-id="' + tarea.id + '">Eliminar</button>' +
-                                    '</div>';
-                    listaTareas.append(tareaHtml);
+    
+    $(document).ready(function () {
+        $('.btnEliminar').click(function() {
+            let tareaId = $(this).data('id');
+            if (confirm('¿Está seguro de que desea borrar este cripto?')) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/tareas/' + tareaId,
+                    success: function(response) {
+                        alert(response.message);
+                        location.reload();
+                    }
                 });
             }
         });
-    }
-
-    $(document).ready(function () {
-        // Cargar tareas al cargar la página
-
-        // // Agregar Tarea
-        // $('#btnAgregar').click(function (e) {
-        //     e.preventDefault();
+        $('.btnEditar').click(function() {
+            let tareaId = $(this).data('id');
+            let nombre = prompt('Ingrese el nuevo nombre:');
+            let descripcion = prompt('Ingrese la nueva descripción:');
             
-        //     $.ajax({
-        //         url: '/tareas',
-        //         type: 'POST',
-        //         data: $('#formTareas').serialize(),
-        //         success: function (response) {
-        //             alert('Tarea agregada exitosamente');
-        //            location.reload();
-        //         }
-        //     });
-        // });
-
-        // Eliminar Tarea
-        $(document).on('click', '.btnEliminar', function () {
-            var tareaId = $(this).data('id');
             $.ajax({
+                type: 'PUT',
                 url: '/tareas/' + tareaId,
-                type: 'DELETE',
-                success: function (response) {
+                data: {
+                    nombre: nombre,
+                    descripcion: descripcion,
+                },
+                success: function(response) {
                     alert(response.message);
                     location.reload();
                 }
             });
-        });
-
-        // Editar Tarea
-        $(document).on('click', '.btnEditar', function () {
-            var tareaId = $(this).data('id');
-            var tareaDiv = $(this).closest('.tarea');
-            var nombre = tareaDiv.find('p').text().split(' - ')[0];
-            var descripcion = tareaDiv.find('p').text().split(' - ')[1];
-
-            // Llenar el formulario con los datos de la tarea seleccionada
-            $('#formTareas input[name="nombre"]').val(nombre);
-            $('#formTareas input[name="descripcion"]').val(descripcion);
-
-            // Cambiar la acción del formulario para que envíe una solicitud PUT al editar
-            $('#formTareas').attr('action', '/tareas/' + tareaId);
-            $('#btnAgregar').text('Editar Tarea');
         });
     });
 </script>
