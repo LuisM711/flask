@@ -1,0 +1,36 @@
+{% extends './layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="display-4 mb-4">Información Criptomonedas</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Estadísticas Generales</h2>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Criptomonedas Activas: {{ data.data.active_cryptocurrencies }}</li>
+                        <li class="list-group-item">Mercados: {{ data.data.markets }}</li>
+                        <li class="list-group-item">Capitalización Total del Mercado (USD): ${{ data.data.total_market_cap.usd  }}</li>
+                        <li class="list-group-item">Volumen Total (USD): ${{ data.data.total_volume.usd  }}</li>
+                        <li class="list-group-item">Cambio en las últimas 24 horas: {{ data.data.market_cap_change_percentage_24h_usd }}%</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Porcentaje de Capitalización</h2>
+                    <ul class="list-group list-group-flush">
+                        {% for currency, percentage in data.data.market_cap_percentage.items() %}
+                            <li class="list-group-item">{{ currency }}: {{ percentage }}%</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, url_for, redirect, send_from_directory, jsonify
+from flask import Flask, render_template, request, url_for, redirect, send_from_directory, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
-import requests
+import requests, socket
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'claveSuperSecretaImposibleDeAdivinar    '
@@ -214,19 +214,78 @@ def nyse():
         return render_template('nyse.html', markets=data)
     else:
         return jsonify({"message": "Error al obtener datos de la Bolsa de Nueva York"})
-@app.route('/nasa', methods=['GET'])
+@app.route('/cryptonews', methods=['GET'])
 @login_required
-def nasa():
-    api_key = '0kV2072caK8oTfVFNXfNKUfcJhShz7TkwbmPx4ck'
-    api_url = f'https://api.nasa.gov/planetary/apod?api_key={api_key}'
+def cryptonews():
+    #api_key = '0kV2072caK8oTfVFNXfNKUfcJhShz7TkwbmPx4ck'
+    api_url = f'https://api.coingecko.com/api/v3/global'
     response = requests.get(api_url)
 
     if response.status_code == 200:
+        print("Inicio de data")
         data = response.json()
-        return render_template('nasa.html', data=data)
+        print(data)
+        print("Fin de data")
+        return render_template('cryptonews.html', data=data)
     else:
         return jsonify({"message": "Error al obtener datos de la NASA"})
 
+@app.route('/socket_data', methods=['GET'])
+@login_required
+def socket_data():
+    direccionSocket = ('127.0.0.1', 8888)
+    try:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect(direccionSocket)
+        data = client_socket.recv(1024).decode('utf-8')
+        client_socket.close()
+        result = {'message': data}
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)})
+# Define el modelo de Tarea
+class Tarea(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(200), unique=True)
+    descripcion = db.Column(db.String(200))
+
+@app.route('/tareas', methods=['GET'])
+@login_required
+def obtener_tareas():
+    tareas = Tarea.query.all()
+    return render_template('tareas.html', tareas=tareas)
+
+@app.route('/tareas', methods=['POST'])
+@login_required
+def agregar_tarea():
+    nombre = request.form['nombre']
+    descripcion = request.form['descripcion']
+    
+    nueva_tarea = Tarea(nombre=nombre, descripcion=descripcion)
+    db.session.add(nueva_tarea)
+    db.session.commit()
+    
+    tareas = Tarea.query.all()
+    return render_template('tareas.html', tareas=tareas)
+
+@app.route('/tareas/<int:id>', methods=['PUT'])
+@login_required
+def editar_tarea(id):
+    tarea = Tarea.query.get_or_404(id)
+    tarea.nombre = request.form['nombre']
+    tarea.descripcion = request.form['descripcion']
+    db.session.commit()
+
+    tareas = Tarea.query.all()
+    return render_template('tareas.html', tareas=tareas)
+
+@app.route('/tareas/<int:id>', methods=['DELETE'])
+@login_required
+def eliminar_tarea(id):
+    tarea = Tarea.query.get(id)
+    db.session.delete(tarea)
+    db.session.commit()
+    return jsonify({"message": "divisa eliminada correctamente"})
 
 
 @app.route('/logout', methods=['GET'])

@@ -1,0 +1,7 @@
+C:\Users\Luis\source\repos\SocketFinal\bin\Debug\SocketFinal.exe.config
+C:\Users\Luis\source\repos\SocketFinal\bin\Debug\SocketFinal.exe
+C:\Users\Luis\source\repos\SocketFinal\bin\Debug\SocketFinal.pdb
+C:\Users\Luis\source\repos\SocketFinal\obj\Debug\SocketFinal.csproj.AssemblyReference.cache
+C:\Users\Luis\source\repos\SocketFinal\obj\Debug\SocketFinal.csproj.CoreCompileInputs.cache
+C:\Users\Luis\source\repos\SocketFinal\obj\Debug\SocketFinal.exe
+C:\Users\Luis\source\repos\SocketFinal\obj\Debug\SocketFinal.pdb
