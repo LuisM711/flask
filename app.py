@@ -235,9 +235,9 @@ def cryptonews():
     else:
         return jsonify({"message": "Error al obtener datos de la NASA"})
 
-@app.route('/socket_data', methods=['GET'])
+@app.route('/socketDolar', methods=['GET'])
 @login_required
-def socket_data():
+def socketDolar():
     direccionSocket = ('127.0.0.1', 8888)
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -275,9 +275,18 @@ def editar_tarea(id):
     tarea.nombre = request.form['nombre']
     tarea.descripcion = request.form['descripcion']
     db.session.commit()
-
-    tareas = Tarea.query.all()
     return jsonify({"message": "Tarea modificada correctamente"})
+@app.route('/tareassearch/<string:id>', methods=['GET'])
+@login_required
+def tareassearch(id):
+    tarea = Tarea.query.get_or_404(id)
+    tareaEncontrada = Tarea.query.filter_by(nombre=id).first()
+
+    if tareaEncontrada is not None:
+        return jsonify({"message": "Tarea modificada correctamente"})
+    else:
+        return jsonify({"message": "Tarea no encontrada"})
+    
 
 @app.route('/tareas/<int:id>', methods=['DELETE'])
 @login_required

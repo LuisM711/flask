@@ -54,6 +54,9 @@
                         <a class="nav-link" href="/cryptonews">Noticias crypto</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" onclick="consultarDolar();">Consultar dolar</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/logout">Cerrar sesión</a>
                     </li>
                 </ul>
@@ -70,7 +73,16 @@
             <p class="mb-0">© 2023 Este software fue desarrollado por Ramón Ruiz y Luis Mario López</p>
         </footer>
     </div>
-
+    <script>
+        function consultarDolar() {
+            fetch('/socketDolar')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    alert(data.message);
+                });
+        }
+    </script>
 </body>
 
 </html>

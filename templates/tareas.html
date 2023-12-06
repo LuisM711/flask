@@ -5,7 +5,7 @@
 
     <form id="formTareas" action="/tareas", method="POST">
         <label for="nombre">Nombre:</label>
-        <input class="form-control" type="text" name="nombre" required>
+        <input class="form-control" type="text" name="nombre" id = "nombre" required>
         
         <label for="descripcion">Descripción:</label>
         <input class="form-control" type="text" name="descripcion" required>
@@ -62,5 +62,13 @@
             });
         });
     });
+    function consultar() {
+        fetch('/tareassearch/'+ document.getElementById("nombre").value)
+            .then(response =>response)
+            .then(data => {
+                console.log(data)
+                alert(data.message);
+            });
+    }
 </script>
 {% endblock %}
